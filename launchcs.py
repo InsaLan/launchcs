@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 from subprocess import run as runCommand
 import pathlib
 import argparse
@@ -12,18 +12,20 @@ def main() -> None:
     numberOfServer = args.numberOfServer
     servers = getServerList()
     runningServers = getRunningServers(servers)
-    stoppedServers = [server for server in servers not in runningServers]
+    stoppedServers = [server for server in servers if runningServers == [] or server not in runningServers]
     match action:
         case "run":
             if numberOfServer > len(stoppedServers):
                 print(f"Can't launch this much servers, {len(servers)} are found and {len(runningServers)} are running!")
+                return
             for server,_ in zip(stoppedServers, range(numberOfServer)):
                 launchServer(server)
             print("Run successfully !")
         case "stop":
             if numberOfServer > len(runningServers):
                 print(f"Can't stop launch this much servers, {len(runningServers)} are running out of the {len(servers)} found")
-            for server,_ in zip(stoppedServers, range(numberOfServer)):
+                return
+            for server,_ in zip(runningServers, range(numberOfServer)):
                 closeServer(server)
             print("Stop successfully !")
         case _:
@@ -46,7 +48,8 @@ def closeServer(server: str) -> None:
     runCommand(f"cs2-server @{server} stop", shell=True)
 
 def getRunningServers(serverList: list[str]) -> list[str]:
-    return [server for server in serverList if "STOPPED" not in runCommand(f"cs2-server @{server}", shell=True, capture_output=True)]
+    return [server for server in serverList if b"STOPPED" not in runCommand(f"cs2-server @{server} status", shell=True, capture_output=True).stdout]
 
 if __name__ == "__main__":
-    main()
+    #main()
+    test()
