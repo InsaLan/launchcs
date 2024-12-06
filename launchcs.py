@@ -51,5 +51,4 @@ def getRunningServers(serverList: list[str]) -> list[str]:
     return [server for server in serverList if b"STOPPED" not in runCommand(f"cs2-server @{server} status", shell=True, capture_output=True).stdout]
 
 if __name__ == "__main__":
-    #main()
-    test()
+    main()
