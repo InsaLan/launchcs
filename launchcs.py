@@ -14,13 +14,13 @@ def main() -> None:
     runningServers = getRunningServers(servers)
     stoppedServers = [server for server in servers if runningServers == [] or server not in runningServers]
     match action:
-        case "run":
+        case "start":
             if numberOfServer > len(stoppedServers):
                 print(f"Can't launch this much servers, {len(servers)} are found and {len(runningServers)} are running!")
                 return
             for server,_ in zip(stoppedServers, range(numberOfServer)):
                 launchServer(server)
-            print("Run successfully !")
+            print("Start successfully !")
         case "stop":
             if numberOfServer > len(runningServers):
                 print(f"Can't stop launch this much servers, {len(runningServers)} are running out of the {len(servers)} found")
@@ -33,9 +33,9 @@ def main() -> None:
             arguments.print_help()
 
 def initializeParser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="Launch CS Servers" ,description="Launch or stop a number of CS2 servers", usage="%(prog)s action numberOfServer")
-    parser.add_argument("action", type=str, help="The action to perform, either 'run' or 'stop'")
-    parser.add_argument("numberOfServer", type=int, help="The number of server to run or stop")
+    parser = argparse.ArgumentParser(prog="launchcs" ,description="Launch or stop a number of CS2 servers", usage="%(prog)s action numberOfServer")
+    parser.add_argument("action", type=str, help="The action to perform, either 'start' or 'stop'")
+    parser.add_argument("numberOfServer", type=int, help="The number of server to start or stop")
     return parser
 
 def getServerList() -> list[str]:
