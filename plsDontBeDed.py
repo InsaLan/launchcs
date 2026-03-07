@@ -2,7 +2,7 @@
 from subprocess import run
 from datetime import datetime
 
-LAUNCHCS_CMD = "/home/cs-servers/scripts/launchcs.py"
+LAUNCHCS_CMD = "/home/cs-servers/launchcs/launchcs.py"
 CS2_SERVER_CMD = "/home/cs-servers/.local/bin/cs2-server"
 
 def getDedServer():
