@@ -4,6 +4,7 @@ import pathlib
 import argparse
 
 INSTANCES_PATH = "/home/cs-servers/msm.d/cs2"
+CS2_SERVER_CMD = "/home/cs-servers/.local/bin/cs2-server"
 
 def main() -> None:
     arguments = initializeParser()
@@ -52,13 +53,13 @@ def getServerList() -> list[str]:
     return [f.name[5:] for f in sorted(pathlib.Path(INSTANCES_PATH).iterdir(), key=lambda f: (len(f.name), f.name)) if f.is_dir() and f.name.startswith("inst")]
 
 def launchServer(server: str) -> None:
-    runCommand(f"cs2-server @{server} start", shell=True)
+    runCommand(f"{CS2_SERVER_CMD} @{server} start", shell=True)
 
 def closeServer(server: str) -> None:
-    runCommand(f"cs2-server @{server} stop", shell=True)
+    runCommand(f"{CS2_SERVER_CMD} @{server} stop", shell=True)
 
 def getRunningServers(serverList: list[str]) -> list[str]:
-    return [server for server in serverList if b"STOPPED" not in runCommand(f"cs2-server @{server} status", shell=True, capture_output=True).stdout]
+    return [server for server in serverList if b"STOPPED" not in runCommand(f"{CS2_SERVER_CMD} @{server} status", shell=True, capture_output=True).stdout]
 
 if __name__ == "__main__":
     main()

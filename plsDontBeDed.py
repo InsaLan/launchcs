@@ -1,21 +1,38 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 from subprocess import run
+from datetime import datetime
+
+LAUNCHCS_CMD = "/home/cs-servers/scripts/launchcs.py"
+CS2_SERVER_CMD = "/home/cs-servers/.local/bin/cs2-server"
 
 def getDedServer():
     dedLine = []
-    serverList = run("/home/cs-servers/launchcs/launchcs.py list", shell=True, capture_output=True).stdout.decode("utf-8")
-    for line in serverList.split("\n"):
+    process = run(f"{LAUNCHCS_CMD} list", shell=True, capture_output=True)
+
+    stdout_str = process.stdout.decode("utf-8")
+    stderr_str = process.stderr.decode("utf-8")
+
+    if stderr_str:
+        print(f"ERROR launchcs.py : {stderr_str}")
+
+    for line in stdout_str.split("\n"):
         if "stopped" in line:
             dedLine.append(line)
+
     ded = []
     for dedServer in dedLine:
-        serverString = dedServer.split()[1]
-        ded.append(serverString)
+        try:
+            serverString = dedServer.split()[1]
+            ded.append(serverString)
+        except IndexError:
+            pass
     return ded
 
 def rebootDed():
-    dedServers = getDedServer()
-    for server in getDedServer():
-        run(f"cs2-server @{server} start", shell=True)
+    servers = getDedServer()
+
+    for server in servers:
+        process = run(f"{CS2_SERVER_CMD} @{server} start", shell=True, capture_output=True)
+        print(f"[{datetime.now()}] - Revived {server}")
 
 rebootDed()
